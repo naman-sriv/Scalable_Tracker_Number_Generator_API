@@ -1,0 +1,97 @@
+# Compiled class files
+*.class
+
+# Package Files
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+
+# Log files
+*.log
+logs/
+target/*.log
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.next
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.propertiesBackup
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties # Maven timing properties
+
+# Gradle (if you ever switch or have mixed projects)
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar # Keep the Gradle wrapper JAR
+.gradle-enterprise/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+.project/
+.settings/
+.classpath
+.factorypath
+
+# Eclipse
+.project
+.classpath
+.settings/
+.sts4/
+
+# VS Code
+.vscode/
+# Exclude specific VS Code files if you want to share workspace settings
+# but typically .vscode/ is ignored.
+# You might want to keep settings.json if it's for the project:
+# !.vscode/settings.json
+# !.vscode/extensions.json
+# !.vscode/launch.json
+# !.vscode/tasks.json
+
+# Operating System Files
+.DS_Store # macOS
+Thumbs.db # Windows
+Desktop.ini # Windows
+.localized # macOS
+
+# Docker
+# Ignore Docker build context files that are not needed in the image
+# This is typically handled by .dockerignore, but good to have here too.
+# For your Dockerfile.dev, you're copying target/*.jar, so target/ should be ignored.
+# Docker Compose related
+*.env # Environment variable files (e.g., .env)
+.docker/
+docker-compose.override.yml # If you use an override file for local dev but don't commit it
+
+# JMeter Test Results
+*.jtl
+*.html # Generated HTML reports from JMeter
+jmeter_results/ # A common directory for JMeter output
+
+# Spring Boot specific
+*.jks # Keystore files (if you use them for SSL/TLS)
+*.p12 # PKCS12 keystore files
+*.key # Private keys
+*.crt # Certificates
+*.pem # PEM files
+.factorypath # Eclipse specific for APT
+.apt_generated/ # Annotation processor generated sources
+
+# Database specific (if you had local DB files, e.g., H2 persistent files)
+*.mv.db
+*.trace.db
+
+# Other temporary files
+*~
+*.bak
+*.swp
+*.tmp
