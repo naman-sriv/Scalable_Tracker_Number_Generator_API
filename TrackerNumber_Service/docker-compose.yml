@@ -1,0 +1,11 @@
+services:
+  tracking-number-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tracking-number-app-assignment
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb+srv://bp_project:ohFLNq0WOs8SIoUS@cluster0.lux2s.mongodb.net/tracking-number-db-prod?retryWrites=true&w=majority&appName=Cluster0&maxPoolSize=50&minPoolSize=5
