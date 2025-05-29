@@ -1,16 +1,13 @@
 spring:
   application:
-    name: trackingnumber-service
-
-  main:
-    lazy-initialization: true
+    name: tracking-number-service # Your application's name
   data:
     mongodb:
-      uri: mongodb://localhost:27017/tracking-number-db-default
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/tracking_db}
       auto-index-creation: false
 
-  profiles:
-    active: dev
+server:
+  port: 8080 # The port on which your Spring Boot application will listen for incoming requests
 
 management:
   endpoint:
