@@ -1,12 +1,11 @@
-# Use the Maven image with OpenJDK 17 as the base
 FROM openjdk:17-jdk-slim
-
-# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the Maven project file to download dependencies
-COPY pom.xml .
+RUN apt-get update && apt-get install -y maven && rm -rf /var/lib/apt/lists/*
 
+COPY pom.xml .
+COPY .mvn .mvn
+COPY mvnw .
 # Download project dependencies
 RUN mvn dependency:go-offline -B
 

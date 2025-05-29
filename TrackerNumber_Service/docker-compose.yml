@@ -8,4 +8,4 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb+srv://bp_project:ohFLNq0WOs8SIoUS@cluster0.lux2s.mongodb.net/tracking-number-db-prod?retryWrites=true&w=majority&appName=Cluster0&maxPoolSize=50&minPoolSize=5
+      - SPRING_DATA_MONGODB_URI=${MONGODB_BASE_URI}&maxPoolSize=${MONGO_MAX_POOL_SIZE}&minPoolSize=${MONGO_MIN_POOL_SIZE}
