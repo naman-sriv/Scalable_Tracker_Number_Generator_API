@@ -3,7 +3,8 @@ spring:
     name: tracking-number-service # Your application's name
   data:
     mongodb:
-      uri: ${MONGODB_BASE_URI}&maxPoolSize=${MONGO_MAX_POOL_SIZE}&minPoolSize=${MONGO_MIN_POOL_SIZE}
+      #uri: ${MONGODB_BASE_URI}&maxPoolSize=${MONGO_MAX_POOL_SIZE}&minPoolSize=${MONGO_MIN_POOL_SIZE}
+      uri: mongodb://localhost:27017/your_database_name
       auto-index-creation: false
 
 server:
