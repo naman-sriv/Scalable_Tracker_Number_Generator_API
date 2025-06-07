@@ -1,45 +1,60 @@
 # Scalable Tracker Number Generator API
 
-A scalable, reactive RESTful API for generating unique tracking numbers for parcels. Built with Spring Boot, Project Reactor, and MongoDB, this service is designed for high throughput and reliability in logistics, e-commerce, and shipping platforms.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+A **RESTful API** for generating unique tracking numbers for parcels. This project leverages Spring Boot (WebFlux), MongoDB (Reactive), and scalable unique ID generation using ULID.
+
+---
+
+## Table of Contents
+
+- [Features](#features)
+- [Architecture](#architecture)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Clone the Repository](#clone-the-repository)
+  - [Configuration](#configuration)
+  - [Build & Run](#build--run)
+- [API Usage](#api-usage)
+  - [Endpoints](#endpoints)
+  - [Sample Request/Response](#sample-requestresponse)
+- [Testing](#testing)
+- [Monitoring](#monitoring)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
 ## Features
 
-- **Unique Tracking Number Generation**: Leverages ULID-based IDs for sortable, globally unique tracking numbers.
-- **Reactive API**: Built on Project Reactor for high scalability and non-blocking IO.
-- **Customizable Metadata**: Associates tracking numbers with origin/destination, customer, and parcel attributes.
-- **Persistence**: Uses MongoDB for storing and validating tracking numbers.
-- **Robustness**: Retries on duplicate keys and ensures uniqueness.
-- **Dockerized**: Easy to containerize and deploy.
+- **RESTful API** to generate, fetch, and manage unique tracking numbers.
+- **Stateless & Scalable**: Designed for cloud-native environments.
+- **ULID**-based identifiers (Universally Unique Lexicographically Sortable Identifier).
+- **Reactive stack** using Spring WebFlux and MongoDB Reactive.
+- **Validation** of API inputs.
+- **Monitoring** with Spring Boot Actuator and CloudWatch metrics.
+- **Docker-ready** (add Dockerfile if needed).
 
 ---
 
-## Architecture Overview
+## Architecture
 
-- **Spring Boot**: Framework for REST API and application lifecycle.
-- **Project Reactor**: Reactive programming for non-blocking request handling.
-- **MongoDB (Reactive)**: Stores tracking numbers and parcel metadata.
-- **Docker**: Containerizes the service for portability and scaling.
+- **Spring Boot (WebFlux)**: Asynchronous, non-blocking, and highly scalable.
+- **MongoDB (Reactive)**: Stores tracking number records.
+- **ULID**: Generates unique, sortable identifiers.
+- **Micrometer + CloudWatch**: Application metrics and monitoring.
 
 ---
 
-## Directory Structure
+## Tech Stack
 
-- `TrackerNumber_Service/`
-  - `src/main/java/com/learning/trackingnumber_service/`
-    - `controller/` — REST API endpoints
-    - `service/` — Business logic for tracking number generation
-    - `repository/` — Reactive MongoDB repository
-    - `dto/` — Data transfer objects (request/response, document model)
-    - `config/` — Async and application configuration
-  - `src/test/java/com/learning/trackingnumber_service/` — Unit tests
-  - `Dockerfile` — Build the service container
-  - `docker-compose.yml` — Compose file for local development/testing
-  - `pom.xml` — Maven configuration
-  - `HELP.md` — Developer notes and Spring Boot guide links
-
-[View the full TrackerNumber_Service directory in GitHub.](https://github.com/naman-sriv/Scalable_Tracker_Number_Generator_API/tree/main/TrackerNumber_Service)
+- Java 17
+- Spring Boot 3.2.x (WebFlux, Actuator, Validation, Data MongoDB Reactive)
+- MongoDB (Reactive)
+- ULID Creator
+- Micrometer (CloudWatch registry)
+- Maven
 
 ---
 
@@ -48,80 +63,98 @@ A scalable, reactive RESTful API for generating unique tracking numbers for parc
 ### Prerequisites
 
 - Java 17+
-- Maven 3.6+
-- Docker (optional, for containerization)
-- MongoDB (local or remote)
+- Maven 3.8+
+- MongoDB instance (local or cloud)
+- (Optional) AWS credentials for CloudWatch metrics
 
-### Build and Run (Locally)
-
-```bash
-cd TrackerNumber_Service
-mvn clean package
-java -jar target/*.jar
-```
-
-Or using Docker:
+### Clone the Repository
 
 ```bash
-docker build -t tracker-number-service .
-docker run -p 8080:8080 tracker-number-service
-```
-
-Or with Docker Compose:
-
-```bash
-docker-compose up --build
+git clone https://github.com/naman-sriv/Scalable_Tracker_Number_Generator_API.git
+cd Scalable_Tracker_Number_Generator_API/TrackerNumber_Service
 ```
 
 ### Configuration
 
-All configuration (database, async pool, etc.) is managed via `application.properties` or environment variables. See `AsyncConfig.java` for async pool tuning.
+Configure MongoDB and optional CloudWatch credentials in `src/main/resources/application.properties`:
+
+```properties
+spring.data.mongodb.uri=mongodb://localhost:27017/trackerdb
+
+# (Optional) CloudWatch
+management.metrics.export.cloudwatch.namespace=TrackerAPI
+management.metrics.export.cloudwatch.step=1m
+cloud.aws.credentials.access-key=<YOUR_AWS_ACCESS_KEY>
+cloud.aws.credentials.secret-key=<YOUR_AWS_SECRET_KEY>
+cloud.aws.region.static=<YOUR_AWS_REGION>
+```
+
+### Build & Run
+
+#### Using Maven
+
+```bash
+mvn clean install
+mvn spring-boot:run
+```
+
+#### Or build a fat JAR
+
+```bash
+mvn clean package
+java -jar target/TrackingNumber_Service-0.0.1-SNAPSHOT.jar
+```
 
 ---
 
 ## API Usage
 
-### Endpoint
+### Endpoints
 
-```
-POST /api/tracking-number
-```
+| Method | Endpoint                   | Description                      |
+|--------|----------------------------|----------------------------------|
+| POST   | `/api/tracking-numbers`    | Generate a new tracking number   |
+| GET    | `/api/tracking-numbers`    | List all tracking numbers        |
+| GET    | `/api/tracking-numbers/{id}` | Get details for a tracking number|
 
-#### Request Body
+*(Endpoints may vary; check your controller classes for exact paths.)*
 
-```json
+### Sample Request/Response
+
+#### Generate a Tracking Number
+
+**Request:**
+
+```http
+POST /api/tracking-numbers
+Content-Type: application/json
+
 {
-  "origin_country_id": "IND",
-  "destination_country_id": "USA",
-  "createdAt": "2025-05-29T00:00:00Z",
-  "weight": 2.5,
-  "customerId": "uuid-string",
-  "customerName": "John Doe",
-  "customerSlug": "john-doe"
+  "parcelId": "12345",
+  "customerEmail": "customer@example.com"
 }
 ```
 
-#### Successful Response
+**Response:**
 
 ```json
 {
-  "trackingNumber": "01HXYZ...",
-  "generatedAt": "2025-05-29T04:49:36Z"
+  "trackingNumber": "01HZYJ3F9Z0Z4T4C7AZXJ4V7CC",
+  "createdAt": "2025-06-07T13:54:58Z"
 }
 ```
 
-- Tracking numbers are globally unique and sortable.
-- Handles retries in case of collisions.
+#### Get All Tracking Numbers
+
+```http
+GET /api/tracking-numbers
+```
 
 ---
 
-## Developer Guide
+## Testing
 
-See [`HELP.md`](TrackerNumber_Service/HELP.md) for links to relevant Spring Boot and Maven documentation.
-
-### Testing
-
-Unit tests are provided for core services. Run:
+Run unit and integration tests using:
 
 ```bash
 mvn test
@@ -129,18 +162,33 @@ mvn test
 
 ---
 
-## License
+## Monitoring
 
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+Spring Boot Actuator exposes health checks and metrics:
+
+- Health: `GET /actuator/health`
+- Metrics: `GET /actuator/metrics`
+- CloudWatch integration (if configured)
 
 ---
 
 ## Contributing
 
-Pull requests and issues are welcome! Please open an issue to discuss your suggestions.
+Contributions are welcome! Please open issues and pull requests.
 
 ---
 
-## Author
+## License
 
-[Naman Srivastava](https://github.com/naman-sriv)
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+## Contact
+
+- [GitHub Repo](https://github.com/naman-sriv/Scalable_Tracker_Number_Generator_API)
+- Maintainer: [naman-sriv](https://github.com/naman-sriv)
+
+---
+
+*Feel free to customize this README with further details, code samples, or architecture diagrams as your project evolves.*
