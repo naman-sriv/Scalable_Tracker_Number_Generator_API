@@ -1,0 +1,24 @@
+services:
+  tracking-number-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tracking-number-app-assignment
+    restart: always
+    ports:
+      - ${SPRING_INNER_PORT}:${SPRING_OUTER_PORT}
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:8.0.10
+    restart: unless-stopped
+    hostname: mongodb
+    ports:
+      - ${MONGODB_INNER_PORT}:${MONGODB_OUTER_PORT}
+    volumes:
+      - db:/data/db
+
+volumes:
+  db:
+

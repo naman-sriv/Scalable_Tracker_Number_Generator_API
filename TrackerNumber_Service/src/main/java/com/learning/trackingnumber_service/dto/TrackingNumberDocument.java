@@ -4,7 +4,6 @@ import jakarta.validation.constraints.Pattern;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.lang.NonNull;
 
 import java.time.Instant;
 import java.util.Objects;
@@ -20,16 +19,15 @@ public class TrackingNumberDocument {
     @Pattern(regexp = "^[A-Z0-9]{1,16}$")
     private String tracking_number;
 
-    private String origin_country_id;
-    private String destination_country_id;
-    private Instant created_at;
-    private double weight;
-    private UUID customer_id;
-    private String customer_name;
-    private String customer_slug;
+    private final String origin_country_id;
+    private final String destination_country_id;
+    private final Instant created_at;
+    private final double weight;
+    private final UUID customer_id;
+    private final String customer_name;
+    private final String customer_slug;
 
-    public TrackingNumberDocument() {
-    }
+
 
     public TrackingNumberDocument(String tracking_number,
                                   String origin_country_id,
@@ -55,6 +53,10 @@ public class TrackingNumberDocument {
 
     public String getTracking_number() {
         return tracking_number;
+    }
+
+    public void setTracking_number(@Pattern(regexp = "^[A-Z0-9]{1,16}$") String tracking_number) {
+        this.tracking_number = tracking_number;
     }
 
     public double getWeight() {
@@ -83,42 +85,6 @@ public class TrackingNumberDocument {
 
     public String getCustomer_slug() {
         return customer_slug;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setTracking_number(String tracking_number) {
-        this.tracking_number = tracking_number;
-    }
-
-    public void setCreated_at(Instant createdAt) {
-        this.created_at = createdAt;
-    }
-
-    public void setCustomer_id(UUID customerId) {
-        this.customer_id = customerId;
-    }
-
-    public void setCustomer_name(String customerName) {
-        this.customer_name = customerName;
-    }
-
-    public void setCustomer_slug(String customerSlug) {
-        this.customer_slug = customerSlug;
-    }
-
-    public void setDestination_country_id(String destination_country_id) {
-        this.destination_country_id = destination_country_id;
-    }
-
-    public void setOrigin_country_id(String origin_country_id) {
-        this.origin_country_id = origin_country_id;
-    }
-
-    public void setWeight(double weight) {
-        this.weight = weight;
     }
 
     @Override

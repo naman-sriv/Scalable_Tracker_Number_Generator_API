@@ -4,8 +4,6 @@ import com.github.f4b6a3.ulid.UlidCreator;
 import com.learning.trackingnumber_service.dto.TrackingNumberDocument;
 import com.learning.trackingnumber_service.repository.TrackingNumberRepository;
 import com.mongodb.DuplicateKeyException;
-import org.hibernate.validator.internal.constraintvalidators.hv.LengthValidator;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
@@ -14,7 +12,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
 
-@Lazy
 @Service
 public class TrackingNumberGenerationService {
 
@@ -24,44 +21,6 @@ public class TrackingNumberGenerationService {
     ){
         this.trackingNumberRepository = trackingNumberRepository;
     }
-
-//    public GeneratedTrackingInfo generateTrackingNumber(String origin_country_id,
-//                                         String destination_country_id,
-//                                         Instant createdAt,
-//                                         double weight,
-//                                         UUID customerId,
-//                                         String customerName,
-//                                         String customerSlug) {
-//        String generatedTrackingNumber;
-//        Instant trnGeneratedAt;
-//        int maxRetries = 3;
-//        int retryCount = 0;
-//
-//        while(retryCount < maxRetries){
-//
-//            generatedTrackingNumber = generateULID();
-//            trnGeneratedAt = Instant.now();
-//            TrackingNumberDocument document = new TrackingNumberDocument(
-//                    generatedTrackingNumber,
-//                    origin_country_id,
-//                    destination_country_id,
-//                    createdAt,
-//                    weight,
-//                    customerId,
-//                    customerName,
-//                    customerSlug
-//            );
-//            try{
-//                trackingNumberRepository.save(document);
-//                return new GeneratedTrackingInfo(generatedTrackingNumber,trnGeneratedAt);
-//            }catch (DuplicateKeyException e){
-//                retryCount++;
-//            }catch (Exception e){
-//                throw new RuntimeException(e.getMessage());
-//            }
-//        }
-//        throw new RuntimeException("Failed to generate a unique tracking number after " + maxRetries + " retries.");
-//    }
 
     public Mono<GeneratedTrackingInfo> generateTrackingNumber(String origin_country_id,
                                                               String destination_country_id,
@@ -73,7 +32,7 @@ public class TrackingNumberGenerationService {
 
 
         return Mono.defer(()-> {
-            String generatedTrackingNumber = generateULID();;
+            String generatedTrackingNumber = generateULID();
             Instant trnGeneratedAt = Instant.now();
 
             TrackingNumberDocument document = new TrackingNumberDocument(generatedTrackingNumber,
@@ -111,6 +70,4 @@ public class TrackingNumberGenerationService {
     }
 
     public record GeneratedTrackingInfo(String generatedTrackingNumber, Instant trnGeneratedAt) {}
-
-
 }

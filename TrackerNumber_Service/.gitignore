@@ -95,3 +95,5 @@ jmeter_results/ # A common directory for JMeter output
 *.bak
 *.swp
 *.tmp
+
+*.env

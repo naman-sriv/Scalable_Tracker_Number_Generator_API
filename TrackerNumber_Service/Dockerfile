@@ -17,7 +17,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Expose the port your Spring Boot application runs on
-EXPOSE 8080
+EXPOSE 8082
 
 # Move the built JAR file from 'target/' to the current working directory ('/app')
 # and rename it to 'app.jar' for consistent execution
