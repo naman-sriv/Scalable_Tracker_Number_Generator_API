@@ -7,6 +7,9 @@ services:
     restart: always
     ports:
       - ${SPRING_INNER_PORT}:${SPRING_OUTER_PORT}
+    environment:
+      SPRING_INNER_PORT: "${SPRING_INNER_PORT}"
+      SPRING_OUTER_PORT: "${SPRING_OUTER_PORT}"
     depends_on:
       - mongodb
 
@@ -16,9 +19,56 @@ services:
     hostname: mongodb
     ports:
       - ${MONGODB_INNER_PORT}:${MONGODB_OUTER_PORT}
+    environment:
+      MONGODB_INNER_PORT: "${MONGODB_INNER_PORT}"
+      MONGODB_OUTER_PORT: "${MONGODB_OUTER_PORT}"
     volumes:
       - db:/data/db
+#    healthcheck:
+#      test: echo 'db.runCommand("ping").ok' | mongosh --port 27017 localhost/test --quiet
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+#      start_period: 20s
+
+  mongodb_exporter:
+    image: percona/mongodb_exporter:0.44.0
+    container_name: mongodb_exporter
+    restart: unless-stopped
+    command: --mongodb.uri=mongodb://mongodb:27017
+    ports:
+      - "9216:9216"
+    depends_on:
+      - mongodb
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+      - prometheus_data:/prometheus
+    command: --config.file=/etc/prometheus/prometheus.yml
+    depends_on:
+      - mongodb_exporter
+      - tracking-number-service
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+    depends_on:
+      - prometheus
 
 volumes:
   db:
+  prometheus_data:
+  grafana_data:
 

@@ -3,12 +3,12 @@ spring:
     name: tracking-number-service # Your application's name
   data:
     mongodb:
-      uri: mongodb://mongodb:${MONGODB_INNER_PORT}/tracking_number_dev_db
+      uri: mongodb://mongodb:${MONGODB_INNER_PORT:27017}/tracking_number_dev_db
       auto-index-creation: false
       host: mongodb
 
 server:
-  port: ${SPRING_INNER_PORT} # The port on which your Spring Boot application will listen for incoming requests
+  port: ${SPRING_INNER_PORT:8082} # The port on which your Spring Boot application will listen for incoming requests
   tomcat:
     threads:
       min-spare: 2
@@ -18,28 +18,30 @@ server:
 
 management:
   endpoint:
-    health:
-      probes:
-        enabled: true
-      show-details: always
+    prometheus:
+      enabled: true
   endpoints:
     web:
       exposure:
-        include:
-          - health
-          - info
-          - metrics
-          - prometheus
+        include: health, info, prometheus
 
   metrics:
-    export:
-      cloudwatch:
-        enabled: true
-        namespace: TrackingNumberService
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
+          client:
+            requests: true
+
+#  metrics:
+#    export:
+#      cloudwatch:
+#        enabled: true
+#        namespace: TrackingNumberService
 
 logging:
   level:
     root: INFO
     com.learning.trackingnumber_service: INFO
-
 

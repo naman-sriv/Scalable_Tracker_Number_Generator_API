@@ -1,0 +1,16 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'tracking-number-service'
+    metrics_path: 'actuator/prometheus'
+    static_configs:
+      - targets: ['tracking-number-service:8082']
+
+  - job_name: 'mongodb-exporter'
+    static_configs:
+      - targets: ['mongodb_exporter:9216']
